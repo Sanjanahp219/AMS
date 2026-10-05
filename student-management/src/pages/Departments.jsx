@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { departments } from "../data/deparments.js"
 import { Link } from "react-router-dom";
 import "./Departments.css"
-import {Delete , Edit} from "lucide-react"
+import {Delete , Edit , X} from "lucide-react"
 
 export default function Departments() {
     const [deparment, setdeparment] = useState({
@@ -11,6 +11,7 @@ export default function Departments() {
         students: "",
     })
     const [showForm, setShowForm] = useState(false);
+    
     const [departmentList, setDepartmentList] = useState(() =>{
         const savedData = localStorage.getItem("savedDeparments");
         return savedData ? JSON.parse(savedData) : departments;
@@ -28,10 +29,9 @@ export default function Departments() {
         e.preventDefault();
 
         
-        // 1. ADD THIS CHECK:
-        if (deparment.departmentid === "") {
-            alert("Please enter a unique Department ID!");
-            return; // This stops the function from running
+        if (!deparment.departmentid || !deparment.departmentname || !deparment.students) {
+            alert("Please fill out all fields!");
+            return;
         }
 
         if(isEditing){
@@ -40,6 +40,11 @@ export default function Departments() {
             ));
             setIsEditing(false);
         }else{
+            const isDuplicate = departmentList.some(dept => dept.departmentid === deparment.departmentid);
+            if (isDuplicate) {
+                alert("This Department ID already exists! Please use a unique ID.");
+                return;
+            }
             setDepartmentList([...departmentList, deparment]);
         }
 
@@ -60,10 +65,24 @@ export default function Departments() {
     }
     return(
        <div className="dtable">
+
         {showForm && (
             <div className="department-form-container">
-                <h2>Add New Department</h2>
-                <form className="department-form">
+                <form className="department-form" style={{ position: "relative" }}>
+                    <button 
+                        type="button" 
+                        onClick={() => {
+                            setShowForm(false);
+                            setdeparment({ departmentid: "", departmentname: "", students: "" });
+                            setIsEditing(false);
+                        }}
+                        style={{ position: "absolute", top: "20px", right: "20px", background: "#f16363de", border: "none", cursor: "pointer" }}
+                    >
+                        <X size={24} />
+                    </button>
+                    <h2 style={{ marginTop: 0, marginBottom: "24px", fontSize: "22px", textAlign: "center" }}>
+                        {isEditing ? "Edit Department" : "Add New Department"}
+                    </h2>
                     <div className="form-group">
                         <label>Department ID</label>
                         <input type="text" placeholder="001" value={deparment.departmentid} onChange={(e) => setdeparment({...deparment, departmentid: e.target.value})} />
@@ -76,7 +95,7 @@ export default function Departments() {
                         <label>Students Count</label>
                         <input type="number" placeholder="0" value={deparment.students} onChange={(e) => setdeparment({...deparment, students: e.target.value})} />
                     </div>
-                    <button type="submit" className="submit-btn" onClick= {handleSubmit} >Save Department</button>
+                    <button type="submit" className="submit-btn" onClick={handleSubmit}>Save Department</button>
                 </form>
             </div>
         )}
@@ -126,5 +145,6 @@ export default function Departments() {
 
        </div>
     )
+  
 
 }

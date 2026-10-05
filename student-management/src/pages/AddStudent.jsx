@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 import './AddStudent.css';
+import { useNavigate } from "react-router-dom";
+import { students as initialStudents } from '../data/students.js';
+// import React, { useState, useEffect } from 'react';
+
 
 const AddStudent = () =>{
+  
+   const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
         studentId:'',
         fullName:'',
@@ -67,12 +74,39 @@ const AddStudent = () =>{
         e.preventDefault();
         
         if (validateForm()) {
-            console.log("Form Data Submitted: ", formData);
-            alert("Student added successfully!");
-            // Here you would typically make an API call to save the data
-            
-            // Optionally clear the form
-            // setFormData({...initialState});
+          const savedData = localStorage.getItem("studentData");
+          const existingStudents = savedData ? JSON.parse(savedData): initialStudents;
+
+          // Translator block to match the table's properties
+          const newStudent = {
+            ...formData,
+            id: formData.studentId,
+            name: formData.fullName
+          };
+
+          const updatedStudents = [...existingStudents, newStudent];
+          localStorage.setItem("studentData", JSON.stringify(updatedStudents));
+
+          setFormData({
+            studentId: '',
+            fullName: '',
+            email: '',
+            phone: '',
+            dateOfBirth: "",
+            gender: "",
+            department: "",
+            course: "",
+            admissionYear: "",
+            semester: "",
+            address: "",
+            city: "",
+            state: "",
+            status: "Active",
+          });
+          setErrors({});
+          console.log("Form Data Submitted: ", formData);
+          alert("Student added successfully!");
+          navigate("/students");
         }
     }
 
@@ -215,7 +249,11 @@ const AddStudent = () =>{
 
           {/* Buttons */}
           <div className="form-actions">
-            <button type="button" className="btn-secondary">Cancel</button>
+            <button onClick={() =>{
+             navigate('/students');
+
+            }}
+            type="button" className="btn-secondary">Cancel</button>
             <button type="submit" className="btn-primary">Add Student</button>
           </div>
 

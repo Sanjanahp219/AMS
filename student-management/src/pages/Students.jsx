@@ -1,13 +1,32 @@
-import React, { useState } from 'react';
+
 import { Link } from 'react-router-dom';
 import { Search, Plus } from 'lucide-react';
 import StudentTable from '../components/StudentTable';
 import { students as initialStudents } from '../data/students';
 import './Students.css';
+import React, { useState, useEffect } from 'react';
+
 
 export default function Students() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [studentsData, setStudentsData] = useState(initialStudents);
+  const [studentsData, setStudentsData] = useState(() => {
+    try {
+      const savedData = localStorage.getItem("studentData");
+      if (!savedData) return initialStudents;
+      
+      const parsed = JSON.parse(savedData);
+      // Safety check: only load students that have an actual 'id'
+      const validStudents = parsed.filter(s => s && s.id);
+      
+      return validStudents.length > 0 ? validStudents : initialStudents;
+    } catch {
+      return initialStudents;
+    }
+  });
+
+  useEffect(()=>{
+    localStorage.setItem("studentData", JSON.stringify(studentsData))
+  },[studentsData])
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -52,6 +71,9 @@ export default function Students() {
     setStudentsData(updatedStudents);
     closeModal();
   }
+
+
+
 
   return (
     <div className="students-page-container">
@@ -126,11 +148,11 @@ export default function Students() {
                 <div className="view-details">
                   <div className="detail-row">
                     <span className="detail-label">Student ID</span>
-                    <span className="detail-value">{selectedStudent?.id}</span>
+                    <span className="detail-value">{selectedStudent?.studentId}</span>
                   </div>
                   <div className="detail-row">
                     <span className="detail-label">Full Name</span>
-                    <span className="detail-value">{selectedStudent?.name}</span>
+                    <span className="detail-value">{selectedStudent?.fullName}</span>
                   </div>
                   <div className="detail-row">
                     <span className="detail-label">Email Address</span>
@@ -181,6 +203,7 @@ export default function Students() {
                   <div className="modal-actions">
                     <button onClick={closeModal} className="btn-secondary">Cancel</button>
                     <button onClick={handleSave} className="btn-primary">Save Changes</button>
+
                   </div>
                 </div>
               )}
