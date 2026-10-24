@@ -1,373 +1,196 @@
-# Student Management System
+# AMS — Academy Management System
 
-A full-stack web application for managing student records. The project is being developed using **React.js** for the frontend, **Java Servlets** for the backend, and **MySQL** for data storage.
-
-The project is designed to understand how a frontend application communicates with a Java backend and database through REST APIs.
-
----
-
-## Features
-
-### Student Management
-
-* Add new student records
-* View all students
-* View student details
-* Edit student information
-* Delete student records
-* Search students
-* Filter students
-
-### Dashboard
-
-* Total number of students
-* Active students
-* Course-wise student count
-* Average marks
-* Basic student statistics
-
-### Future Features
-
-* Authentication and authorization
-* Role-based access
-* Pagination
-* Attendance management
-* Course management
-* Advanced analytics
-* Export reports
-* Spring Boot migration
+> **Simplifying Academy Management.**  
+> A full-stack, beginner-friendly web application designed for academies, coaching centers, and training institutes to manage admissions, courses, batches, enrollments, fees, and reports digitally.
 
 ---
 
-## Tech Stack
+##  Project Overview
 
-### Frontend
-
-* React.js
-* JavaScript
-* HTML5
-* CSS3
-* React Router
-* Axios
-
-### Backend
-
-* Java
-* Java Servlets
-* JDBC
-* Apache Tomcat
-* Maven
-* REST APIs
-* JSON
-
-### Database
-
-* MySQL
-* MySQL Workbench
-
-### Tools
-
-* Visual Studio Code
-* IntelliJ IDEA / Eclipse
-* Postman
-* Git
-* GitHub
+**AMS (Academy Management System)** replaces paper forms, spreadsheets, and manual ledgers with a centralized, professional web platform. Built with **React** and **Node.js/Express** using **MongoDB Atlas**, it is structured to be easy to understand for beginners, modular, and styled using dedicated **external CSS** files rather than complex Tailwind frameworks.
 
 ---
 
-## System Architecture
+##  Technology Stack
 
-```text
-User
-  ↓
-React Frontend
-  ↓
-HTTP / JSON
-  ↓
-Java Servlet Backend
-  ↓
-Service Layer
-  ↓
-DAO Layer
-  ↓
-JDBC
-  ↓
-MySQL Database
+| Layer | Technologies |
+|---|---|
+| **Frontend** | React, Vite, React Router, Axios, Lucide React, Recharts |
+| **Styling** | External CSS (`.css` per page/component) — clean, beginner-friendly |
+| **Backend** | Node.js, Express.js (ES modules), REST APIs |
+| **Database** | MongoDB Atlas with Mongoose models, indexes, and aggregations |
+| **Authentication** | JWT (JSON Web Tokens), bcrypt password hashing, Role-Based Access Control |
+| **Testing** | Node.js test runner for business rules and security |
+
+---
+
+## ✨ Features Implemented
+
+### 1.  Real-Time Dashboard
+- **Key Metrics Cards:** Total Students, Active Students, Courses, Active Batches, Active Enrollments, Total Fees Collected (₹), and Outstanding Balances (₹).
+- **Interactive Visualizations (Recharts):**
+  - Course Enrollment Distribution (Bar Chart).
+  - Monthly Fee Collection Trends (Bar Chart).
+- **Live Activity Feeds:** Recent student registrations, recent enrollments, and recent fee payments.
+
+### 2.  Student Management
+- **Safe ID Generation:** Auto-generates unique, readable student IDs (e.g., `STU-2026-0001`).
+- **Student Directory Table:** Real-time search by name, phone, email, or ID; status filters (Active, Inactive, Archived).
+- **Student Registration & Editing:** Name, Phone, Email, Date of Birth, Gender, Address, City, Emergency Contact, and Notes.
+- **Dedicated Student Profile (`/student/:id`):** Displays personal details, all active/completed course enrollments, batch assignments, and fee payment history.
+
+### 3.  Course Management
+- **Course Catalog:** Unique course codes (e.g., `FS-MERN-01`), durations (Weeks/Months/Hours), fees, categories, and enrollment counts.
+- **Course Actions:** Add course modal, edit course details, and one-click Archive/Activate toggle to protect historical records.
+
+### 4.  Batch Management
+- **Batch Scheduling:** Organizes courses into morning, evening, or weekend batches with start/end dates and times.
+- **Capacity Enforcement:** Visual capacity meter bar (e.g., `15 / 30 (50%)`) and backend validation preventing overbooking when maximum capacity is reached.
+
+### 5.  Enrollment Management
+- **Enrollment Workflow:** Select student and course; auto-fills course fee; allows applying authorized discounts; auto-calculates final payable amount (`Agreed Fee - Discount = Final Payable`).
+- **Integrity Protections:** Prevents duplicate active enrollments for the same student and course.
+- **Status Lifecycles:** Supports `Pending`, `Active`, `Completed`, and `Cancelled` statuses.
+
+### 6.  Payment & Fee Management
+- **Financial Tracking:** Tracks agreed fees, partial payments, multiple installments, and remaining balances.
+- **Overpayment Guard:** Automatically rejects payments exceeding the outstanding balance.
+- **Official Receipts:** Generates unique receipt numbers (e.g., `RCP-2026-0001`) with printable acknowledgement modals.
+- **Payment Methods:** Cash, UPI, Bank Transfer, Card, Other.
+
+### 7.  Reports & Analytics (with CSV Export)
+- 4 Dedicated Interactive Reports:
+  1. **Student Directory Report**
+  2. **Course Enrollments Report**
+  3. **Fee Collections Report**
+  4. **Outstanding Balances Report**
+- **One-Click CSV Download:** Exports tabular reports into `.csv` files for spreadsheets and offline auditing.
+
+### 8. Staff Management & Access Control
+- **Role-Based Permissions:** Distinguishes between `Admin` and `Staff`.
+- **Admin Control Area:** Create staff accounts, assign roles, activate/deactivate accounts, and reset staff passwords.
+
+### 9.  Academy Settings
+- Configures Academy Name, Tagline, Contact Email, Contact Phone, Campus Address, Default Currency (default: **INR ₹**), and Timezone.
+
+---
+
+##  Project Structure
+
+```
+Student-Management/
+├── package.json              # Root scripts to run both apps easily
+├── README.md                 # Complete system documentation
+│
+├── backend/                  # Node.js + Express + MongoDB Atlas
+│   ├── config/
+│   │   └── db.js             # MongoDB Atlas connection & error helper
+│   ├── middleware/
+│   │   └── auth.js           # JWT verification & Admin authorization
+│   ├── models/
+│   │   ├── user.js           # Admin & Staff user model
+│   │   ├── student.js        # Student model with auto STU ID
+│   │   ├── course.js         # Course model with unique code & fees
+│   │   ├── batch.js          # Batch model with capacity limits
+│   │   ├── enrollment.js     # Enrollment model linking student + course
+│   │   ├── payment.js        # Payment transactions & receipt numbers
+│   │   └── settings.js       # Academy profile & currency settings
+│   ├── routes/
+│   │   ├── authRoutes.js     # /login, /register, /me
+│   │   ├── studentRoutes.js  # CRUD, search, filter, student profile
+│   │   ├── courseRoutes.js   # CRUD, course counts, archive toggle
+│   │   ├── batchRoutes.js    # CRUD, capacity tracking
+│   │   ├── enrollmentRoutes.js # Enrollment rules & fee validation
+│   │   ├── paymentRoutes.js  # Payment tracking & overpayment checks
+│   │   ├── dashboardRoutes.js# Real aggregation metrics & chart data
+│   │   ├── reportRoutes.js   # Tabular reports & CSV exports
+│   │   ├── staffRoutes.js    # Admin-only staff account management
+│   │   └── settingsRoutes.js # Academy profile configuration
+│   ├── seed.js               # Development demo seed script
+│   ├── test-rules.js         # Core business logic automated tests
+│   ├── server.js             # Main Express server entry point
+│   ├── .env                  # Backend environment variables
+│   └── package.json
+│
+└── student-management/       # React (Vite) Frontend
+    ├── src/
+    │   ├── components/
+    │   │   ├── Navbar.jsx & Navbar.css
+    │   │   ├── Sidebar.jsx & Sidebar.css
+    │   │   ├── StudentTable.jsx & StudentTable.css
+    │   │   └── ProtectedRoute.jsx
+    │   ├── pages/
+    │   │   ├── Dashboard.jsx & Dashboard.css
+    │   │   ├── Students.jsx & Students.css
+    │   │   ├── AddStudent.jsx & AddStudent.css
+    │   │   ├── EditStudent.jsx
+    │   │   ├── ViewStudent.jsx & ViewStudent.css
+    │   │   ├── Courses.jsx & Courses.css
+    │   │   ├── Batches.jsx & Batches.css
+    │   │   ├── Enrollments.jsx & Enrollments.css
+    │   │   ├── Payments.jsx & Payments.css
+    │   │   ├── Reports.jsx & Reports.css
+    │   │   ├── Staff.jsx & Staff.css
+    │   │   ├── Settings.jsx & Settings.css
+    │   │   └── LoginForm.jsx & LoginForm.css
+    │   ├── services/         # Reusable Axios service modules
+    │   │   ├── api.js
+    │   │   ├── studentService.js
+    │   │   ├── courseService.js
+    │   │   ├── batchService.js
+    │   │   ├── enrollmentService.js
+    │   │   ├── paymentService.js
+    │   │   ├── reportService.js
+    │   │   ├── staffService.js
+    │   │   └── settingsService.js
+    │   ├── app.jsx           # App routing with React Router
+    │   └── main.jsx
+    └── package.json
 ```
 
 ---
 
-## Project Structure
+## 🚀 Getting Started
 
-```text
-StudentManagementSystem/
-│
-├── docs/
-│   └── system-design.md
-│
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── services/
-│   │   ├── data/
-│   │   ├── App.jsx
-│   │   ├── main.jsx
-│   │   └── index.css
-│   │
-│   ├── package.json
-│   └── vite.config.js
-│
-├── backend/
-│   └── Java application
-│
-└── README.md
-```
+### 1. Prerequisites
+- **Node.js** (v18 or higher recommended)
+- **MongoDB Atlas** Account & Cluster
 
----
 
-## Getting Started
 
-### Prerequisites
+> **Important MongoDB Atlas IP Whitelist Step:**  
+> If you see `Could not connect to any servers in your MongoDB Atlas cluster`, log in to your **MongoDB Atlas Console** → **Network Access** → click **Add IP Address** → select **"Allow Access from Anywhere" (`0.0.0.0/0`)** or add your current IP address.
 
-Make sure the following are installed:
-
-* Node.js
-* npm
-* Java JDK
-* MySQL
-* Apache Tomcat
-* Git
-
----
-
-## Frontend Setup
-
-Navigate to the frontend directory:
-
+### 3. Seed Demo Data (Optional)
+To populate realistic courses, batches, students, enrollments, payments, and admin accounts into your MongoDB Atlas database:
 ```bash
-cd frontend
+npm run seed
 ```
 
-Install dependencies:
 
+## 🏃 Running the Application
+
+### Start the Backend Server:
 ```bash
-npm install
+npm run server
 ```
+*The backend API will run on `http://localhost:5000`.*
 
-Start the development server:
-
+### Start the Frontend Client:
 ```bash
 npm run dev
 ```
+*The Vite frontend will open at `http://localhost:5173`.*
 
-The application will normally be available at:
+### Run Automated Tests:
+```bash
+npm run test
+```
 
-```text
-http://localhost:5173
+### Build Frontend for Production:
+```bash
+npm run client:build
 ```
 
 ---
-
-## Backend Setup
-
-The Java backend will be configured using:
-
-* Java
-* Maven
-* Apache Tomcat
-* Java Servlets
-* JDBC
-
-Backend setup will be added as the backend development phase begins.
-
----
-
-## Database Setup
-
-The application will use MySQL.
-
-Create the database:
-
-```sql
-CREATE DATABASE student_management;
-```
-
-Create the students table:
-
-```sql
-CREATE TABLE students (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(150) NOT NULL,
-    phone VARCHAR(20),
-    course VARCHAR(100),
-    marks INT,
-    status VARCHAR(30)
-);
-```
-
----
-
-## API Endpoints
-
-The backend will provide the following REST API endpoints:
-
-| Method | Endpoint             | Description       |
-| ------ | -------------------- | ----------------- |
-| GET    | `/api/students`      | Get all students  |
-| GET    | `/api/students/{id}` | Get student by ID |
-| POST   | `/api/students`      | Add a new student |
-| PUT    | `/api/students/{id}` | Update a student  |
-| DELETE | `/api/students/{id}` | Delete a student  |
-
----
-
-## Application Flow
-
-For example, when adding a student:
-
-```text
-Student Form
-     ↓
-React
-     ↓
-Axios
-     ↓
-Java Servlet
-     ↓
-Student Service
-     ↓
-Student DAO
-     ↓
-JDBC
-     ↓
-MySQL
-```
-
-The response then follows the reverse direction:
-
-```text
-MySQL
-  ↓
-JDBC
-  ↓
-DAO
-  ↓
-Service
-  ↓
-Servlet
-  ↓
-JSON Response
-  ↓
-React
-  ↓
-Updated UI
-```
-
----
-
-## Development Roadmap
-
-* [x] Project planning
-* [x] System design
-* [ ] React project setup
-* [ ] Application layout
-* [ ] Navbar and Sidebar
-* [ ] Dashboard
-* [ ] Students page
-* [ ] Student table
-* [ ] Add student form
-* [ ] Edit student
-* [ ] Delete student
-* [ ] Search and filtering
-* [ ] Java Servlet backend
-* [ ] JDBC configuration
-* [ ] MySQL database
-* [ ] REST API development
-* [ ] Frontend-backend integration
-* [ ] API testing with Postman
-* [ ] Final testing
-* [ ] GitHub documentation
-* [ ] Deployment
-
----
-
-## Learning Objectives
-
-This project is being developed to understand:
-
-* React component architecture
-* React state management
-* Form handling
-* CRUD operations
-* REST APIs
-* HTTP methods
-* Java Servlets
-* Service and DAO layers
-* JDBC
-* SQL
-* MySQL
-* Frontend-backend communication
-* API testing
-* Git and GitHub
-
----
-
-## Future Backend Migration
-
-The initial backend is being developed using **Java Servlets and JDBC** to understand the fundamentals of Java web development.
-
-The backend can later be migrated to **Spring Boot**:
-
-```text
-Current:
-
-React
-  ↓
-Servlet
-  ↓
-Service
-  ↓
-DAO
-  ↓
-JDBC
-  ↓
-MySQL
-```
-
-Future:
-
-```text
-React
-  ↓
-Spring Boot REST API
-  ↓
-Controller
-  ↓
-Service
-  ↓
-Repository
-  ↓
-JPA / Hibernate
-  ↓
-MySQL
-```
-
----
-
-## Project Status
-
-**Status:** In Development
-
-The project is currently being developed from the frontend and will later be integrated with the Java backend and MySQL database.
-
----
-
-## Author
-
-**Sanjana H P**
-
-Full-Stack Developer | React.js + Java
-
 
